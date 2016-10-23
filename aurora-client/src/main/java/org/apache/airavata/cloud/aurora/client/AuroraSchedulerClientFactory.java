@@ -8,10 +8,22 @@ import org.apache.thrift.transport.TTransport;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+// TODO: Auto-generated Javadoc
+/**
+ * A factory for creating AuroraSchedulerClient objects.
+ */
 public class AuroraSchedulerClientFactory {
 	
+	/** The Constant logger. */
 	private final static Logger logger = LoggerFactory.getLogger(AuroraSchedulerClientFactory.class);
 	
+	/**
+	 * Creates a new AuroraSchedulerClient object.
+	 *
+	 * @param connectionUrl the connection url
+	 * @return the client
+	 * @throws Exception the exception
+	 */
 	public static ReadOnlyScheduler.Client createAuroraClient(String connectionUrl) throws Exception {
 		try {
 			TTransport transport = new THttpClient(connectionUrl);

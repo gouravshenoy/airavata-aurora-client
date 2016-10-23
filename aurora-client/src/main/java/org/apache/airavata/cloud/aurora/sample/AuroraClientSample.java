@@ -16,11 +16,23 @@ import org.apache.airavata.cloud.aurora.client.sdk.TaskConfig;
 import org.apache.airavata.cloud.aurora.util.Constants;
 import org.apache.thrift.TException;
 
+/**
+ * The Class AuroraClientSample.
+ */
 public class AuroraClientSample {
 	
+	/** The aurora scheduler client. */
 	private static ReadOnlyScheduler.Client auroraSchedulerClient;
+	
+	/** The properties. */
 	private static Properties properties = new Properties();
 	
+	/**
+	 * Gets the job summary.
+	 *
+	 * @param client the client
+	 * @return the job summary
+	 */
 	public static void getJobSummary(ReadOnlyScheduler.Client client) {
 		try {
 			Response response = client.getJobs("centos");
@@ -65,6 +77,11 @@ public class AuroraClientSample {
 		}
 	}
 	
+	/**
+	 * The main method.
+	 *
+	 * @param args the arguments
+	 */
 	public static void main(String[] args) {
 		 try {
 			properties.load(AuroraClientSample.class.getClassLoader().getResourceAsStream(Constants.AURORA_SCHEDULER_PROP_FILE));

@@ -23,12 +23,24 @@ import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * The Class AuroraThriftClientUtil.
+ */
 public class AuroraThriftClientUtil {
 
+	/** The Constant logger. */
 	private final static Logger logger = LoggerFactory.getLogger(AuroraThriftClientUtil.class);
 	
+	/** The properties. */
 	private static Properties properties = new Properties();
 	
+	/**
+	 * Gets the executor config json.
+	 *
+	 * @param jobConfig the job config
+	 * @return the executor config json
+	 * @throws Exception the exception
+	 */
 	public static String getExecutorConfigJson(JobConfigBean jobConfig) throws Exception {
 		String exeConfigJson = null;
 		try {
@@ -89,6 +101,13 @@ public class AuroraThriftClientUtil {
 		return exeConfigJson;
 	}
 	
+	/**
+	 * Gets the resource set.
+	 *
+	 * @param resources the resources
+	 * @return the resource set
+	 * @throws Exception the exception
+	 */
 	public static Set<Resource> getResourceSet(ResourceBean resources) throws Exception {
 		Set<Resource> resourceSet = new HashSet<>();
 		
@@ -119,6 +138,13 @@ public class AuroraThriftClientUtil {
 		return resourceSet;
 	}
 	
+	/**
+	 * Gets the executor config.
+	 *
+	 * @param exeConfigJson the exe config json
+	 * @return the executor config
+	 * @throws Exception the exception
+	 */
 	public static ExecutorConfig getExecutorConfig(String exeConfigJson) throws Exception {
 		ExecutorConfig exeConfig = null;
 		
@@ -140,6 +166,13 @@ public class AuroraThriftClientUtil {
 		return exeConfig;
 	}
 	
+	/**
+	 * Gets the aurora job key.
+	 *
+	 * @param jobKeyBean the job key bean
+	 * @return the aurora job key
+	 * @throws Exception the exception
+	 */
 	public static JobKey getAuroraJobKey(JobKeyBean jobKeyBean) throws Exception {
 		JobKey jobKey = null;
 		
@@ -159,6 +192,13 @@ public class AuroraThriftClientUtil {
 		return jobKey;
 	}
 	
+	/**
+	 * Gets the aurora identity.
+	 *
+	 * @param identityBean the identity bean
+	 * @return the aurora identity
+	 * @throws Exception the exception
+	 */
 	public static Identity getAuroraIdentity(IdentityBean identityBean) throws Exception {
 		Identity owner = null;
 		
@@ -176,6 +216,13 @@ public class AuroraThriftClientUtil {
 		return owner;
 	}
 	
+	/**
+	 * Gets the aurora job config.
+	 *
+	 * @param jobConfigBean the job config bean
+	 * @return the aurora job config
+	 * @throws Exception the exception
+	 */
 	public static JobConfiguration getAuroraJobConfig(JobConfigBean jobConfigBean) throws Exception {
 		JobConfiguration jobConfig = null;
 		
@@ -215,6 +262,12 @@ public class AuroraThriftClientUtil {
 		return jobConfig;
 	}
 	
+	/**
+	 * The main method.
+	 *
+	 * @param args the arguments
+	 * @throws Exception the exception
+	 */
 	public static void main(String[] args) throws Exception {
 		JobKeyBean jobKey = new JobKeyBean("devel", "centos", "test_job");
 		IdentityBean owner = new IdentityBean("centos");
