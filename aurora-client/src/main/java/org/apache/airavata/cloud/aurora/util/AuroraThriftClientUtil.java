@@ -10,12 +10,14 @@ import org.apache.airavata.cloud.aurora.client.bean.JobConfigBean;
 import org.apache.airavata.cloud.aurora.client.bean.JobKeyBean;
 import org.apache.airavata.cloud.aurora.client.bean.ProcessBean;
 import org.apache.airavata.cloud.aurora.client.bean.ResourceBean;
-import org.apache.airavata.cloud.aurora.client.bean.TaskConfigBean;
+import org.apache.airavata.cloud.aurora.client.bean.ResponseBean;
+import org.apache.airavata.cloud.aurora.client.bean.ServerInfoBean;
 import org.apache.airavata.cloud.aurora.client.sdk.ExecutorConfig;
 import org.apache.airavata.cloud.aurora.client.sdk.Identity;
 import org.apache.airavata.cloud.aurora.client.sdk.JobConfiguration;
 import org.apache.airavata.cloud.aurora.client.sdk.JobKey;
 import org.apache.airavata.cloud.aurora.client.sdk.Resource;
+import org.apache.airavata.cloud.aurora.client.sdk.Response;
 import org.apache.airavata.cloud.aurora.client.sdk.TaskConfig;
 import org.apache.airavata.cloud.aurora.sample.AuroraClientSample;
 import org.apache.commons.io.IOUtils;
@@ -63,10 +65,10 @@ public class AuroraThriftClientUtil {
 					.put("cpu", jobConfig.getTaskConfig().getResources().getNumCpus());
 				
 				exeConfig.getJSONObject("task").getJSONObject("resources")
-				.put("disk", jobConfig.getTaskConfig().getResources().getDiskMb());
+				.put("disk", jobConfig.getTaskConfig().getResources().getDiskMb() * 1024 * 1024);
 				
 				exeConfig.getJSONObject("task").getJSONObject("resources")
-				.put("ram", jobConfig.getTaskConfig().getResources().getRamMb());
+				.put("ram", jobConfig.getTaskConfig().getResources().getRamMb() * 1024 * 1024);
 				
 				// iterate over all processes
 				for(ProcessBean process : jobConfig.getTaskConfig().getProcesses()) {
@@ -262,28 +264,52 @@ public class AuroraThriftClientUtil {
 		return jobConfig;
 	}
 	
+	public static ResponseBean getResponseBean(Response response, ResponseResultType resultType) {
+		switch (resultType) {
+			case CREATE_JOB:
+				return getCreateJobResponse(response);
+			default:
+				return null;
+		}
+	}
+	
+	private static ResponseBean getCreateJobResponse(Response response) {
+		ResponseBean responseBean = null;
+		if(response != null) {
+			responseBean = new ResponseBean();
+			responseBean.setResponseCode(ResponseCodeEnum
+					.findByValue(response.getResponseCode().getValue()));
+			
+			ServerInfoBean serverInfo = new ServerInfoBean(response.getServerInfo().getClusterName(), 
+					response.getServerInfo().getStatsUrlPrefix()); 
+			responseBean.setServerInfo(serverInfo);
+		}
+		
+		return responseBean;
+	}
+	
 	/**
 	 * The main method.
 	 *
 	 * @param args the arguments
 	 * @throws Exception the exception
 	 */
-	public static void main(String[] args) throws Exception {
-		JobKeyBean jobKey = new JobKeyBean("devel", "centos", "test_job");
-		IdentityBean owner = new IdentityBean("centos");
-		
-		ProcessBean proc1 = new ProcessBean("process_1", "echo hello_world_1", false);
-		ProcessBean proc2 = new ProcessBean("process_2", "echo hello_world_2", false);
-		Set<ProcessBean> processes = new HashSet<>();
-		processes.add(proc1);
-		processes.add(proc2);
-		
-		ResourceBean resources = new ResourceBean(0.25, 8388608, 1048576);
-		
-		TaskConfigBean taskConfig = new TaskConfigBean("task_hello_world", processes, resources);
-		JobConfigBean jobConfig = new JobConfigBean(jobKey, owner, taskConfig, "example");
-		
-		String executorConfigJson = getExecutorConfigJson(jobConfig);
-		System.out.println(executorConfigJson);
-	}
+//	public static void main(String[] args) throws Exception {
+//		JobKeyBean jobKey = new JobKeyBean("devel", "centos", "test_job");
+//		IdentityBean owner = new IdentityBean("centos");
+//		
+//		ProcessBean proc1 = new ProcessBean("process_1", "echo 'hello_world_1'", false);
+//		ProcessBean proc2 = new ProcessBean("process_2", "echo 'hello_world_2'", false);
+//		Set<ProcessBean> processes = new HashSet<>();
+//		processes.add(proc1);
+//		processes.add(proc2);
+//		
+//		ResourceBean resources = new ResourceBean(0.1, 8, 1);
+//		
+//		TaskConfigBean taskConfig = new TaskConfigBean("task_hello_world", processes, resources);
+//		JobConfigBean jobConfig = new JobConfigBean(jobKey, owner, taskConfig, "example");
+//		
+//		String executorConfigJson = getExecutorConfigJson(jobConfig);
+//		System.out.println(executorConfigJson);
+//	}
 }

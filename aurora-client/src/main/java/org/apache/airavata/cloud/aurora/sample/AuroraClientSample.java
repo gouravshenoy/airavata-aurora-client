@@ -1,10 +1,19 @@
 package org.apache.airavata.cloud.aurora.sample;
 
 import java.text.MessageFormat;
+import java.util.HashSet;
 import java.util.Properties;
 import java.util.Set;
 
 import org.apache.airavata.cloud.aurora.client.AuroraSchedulerClientFactory;
+import org.apache.airavata.cloud.aurora.client.AuroraThriftClient;
+import org.apache.airavata.cloud.aurora.client.bean.IdentityBean;
+import org.apache.airavata.cloud.aurora.client.bean.JobConfigBean;
+import org.apache.airavata.cloud.aurora.client.bean.JobKeyBean;
+import org.apache.airavata.cloud.aurora.client.bean.ProcessBean;
+import org.apache.airavata.cloud.aurora.client.bean.ResourceBean;
+import org.apache.airavata.cloud.aurora.client.bean.ResponseBean;
+import org.apache.airavata.cloud.aurora.client.bean.TaskConfigBean;
 import org.apache.airavata.cloud.aurora.client.sdk.ExecutorConfig;
 import org.apache.airavata.cloud.aurora.client.sdk.GetJobsResult;
 import org.apache.airavata.cloud.aurora.client.sdk.Identity;
@@ -13,6 +22,7 @@ import org.apache.airavata.cloud.aurora.client.sdk.JobKey;
 import org.apache.airavata.cloud.aurora.client.sdk.ReadOnlyScheduler;
 import org.apache.airavata.cloud.aurora.client.sdk.Response;
 import org.apache.airavata.cloud.aurora.client.sdk.TaskConfig;
+import org.apache.airavata.cloud.aurora.util.AuroraThriftClientUtil;
 import org.apache.airavata.cloud.aurora.util.Constants;
 import org.apache.thrift.TException;
 
@@ -77,6 +87,29 @@ public class AuroraClientSample {
 		}
 	}
 	
+	public static void createJob() throws Exception {
+		JobKeyBean jobKey = new JobKeyBean("devel", "centos", "test_job");
+		IdentityBean owner = new IdentityBean("centos");
+		
+		ProcessBean proc1 = new ProcessBean("process_1", "echo 'hello_world_1'", false);
+		ProcessBean proc2 = new ProcessBean("process_2", "echo 'hello_world_2'", false);
+		Set<ProcessBean> processes = new HashSet<>();
+		processes.add(proc1);
+		processes.add(proc2);
+		
+		ResourceBean resources = new ResourceBean(0.1, 8, 1);
+		
+		TaskConfigBean taskConfig = new TaskConfigBean("task_hello_world", processes, resources);
+		JobConfigBean jobConfig = new JobConfigBean(jobKey, owner, taskConfig, "example");
+		
+		String executorConfigJson = AuroraThriftClientUtil.getExecutorConfigJson(jobConfig);
+		System.out.println(executorConfigJson);
+		
+		AuroraThriftClient client = AuroraThriftClient.getAuroraThriftClient(Constants.AURORA_SCHEDULER_PROP_FILE);
+		ResponseBean response = client.createJob(jobConfig);
+		System.out.println(response);
+	}
+	
 	/**
 	 * The main method.
 	 *
@@ -87,10 +120,13 @@ public class AuroraClientSample {
 			properties.load(AuroraClientSample.class.getClassLoader().getResourceAsStream(Constants.AURORA_SCHEDULER_PROP_FILE));
 			String auroraHost = properties.getProperty(Constants.AURORA_SCHEDULER_HOST);
 			String auroraPort = properties.getProperty(Constants.AURORA_SCHEDULER_PORT);
-			auroraSchedulerClient = AuroraSchedulerClientFactory.createAuroraClient(MessageFormat.format(Constants.AURORA_SCHEDULER_CONNECTION_URL, auroraHost, auroraPort));
+			auroraSchedulerClient = AuroraSchedulerClientFactory.createReadOnlySchedulerClient(MessageFormat.format(Constants.AURORA_SCHEDULER_CONNECTION_URL, auroraHost, auroraPort));
 			
 			// get jobs summary
 			AuroraClientSample.getJobSummary(auroraSchedulerClient);
+			
+			// create sample job
+//			AuroraClientSample.createJob();
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		} 
