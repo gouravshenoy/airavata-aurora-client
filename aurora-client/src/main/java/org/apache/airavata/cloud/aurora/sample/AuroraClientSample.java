@@ -123,10 +123,13 @@ public class AuroraClientSample {
 			auroraSchedulerClient = AuroraSchedulerClientFactory.createReadOnlySchedulerClient(MessageFormat.format(Constants.AURORA_SCHEDULER_CONNECTION_URL, auroraHost, auroraPort));
 			
 			// get jobs summary
-			AuroraClientSample.getJobSummary(auroraSchedulerClient);
+//			AuroraClientSample.getJobSummary(auroraSchedulerClient);
 			
 			// create sample job
 //			AuroraClientSample.createJob();
+			AuroraThriftClient client = AuroraThriftClient.getAuroraThriftClient(Constants.AURORA_SCHEDULER_PROP_FILE);
+			ResponseBean response = client.getPendingReasonForJob(new JobKeyBean("devel", "centos", "hello_pending"));
+			System.out.println(response);
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		} 

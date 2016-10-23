@@ -7,7 +7,9 @@ import java.util.Set;
 
 import org.apache.airavata.cloud.aurora.client.bean.IdentityBean;
 import org.apache.airavata.cloud.aurora.client.bean.JobConfigBean;
+import org.apache.airavata.cloud.aurora.client.bean.JobDetailsResponseBean;
 import org.apache.airavata.cloud.aurora.client.bean.JobKeyBean;
+import org.apache.airavata.cloud.aurora.client.bean.PendingJobReasonBean;
 import org.apache.airavata.cloud.aurora.client.bean.ProcessBean;
 import org.apache.airavata.cloud.aurora.client.bean.ResourceBean;
 import org.apache.airavata.cloud.aurora.client.bean.ResponseBean;
@@ -264,16 +266,63 @@ public class AuroraThriftClientUtil {
 		return jobConfig;
 	}
 	
+	/**
+	 * Gets the response bean.
+	 *
+	 * @param response the response
+	 * @param resultType the result type
+	 * @return the response bean
+	 */
 	public static ResponseBean getResponseBean(Response response, ResponseResultType resultType) {
 		switch (resultType) {
-			case CREATE_JOB:
-				return getCreateJobResponse(response);
+			case GET_JOB_DETAILS:
+				return getJobDetailsResponseBean(response);
+			case GET_PENDING_JOB_REASON:
+				return getPendingJobReasonBean(response);
 			default:
-				return null;
+				return getJobResponse(response);
 		}
 	}
 	
-	private static ResponseBean getCreateJobResponse(Response response) {
+	/**
+	 * Gets the job details response bean.
+	 *
+	 * @param response the response
+	 * @return the job details response bean
+	 */
+	private static JobDetailsResponseBean getJobDetailsResponseBean(Response response) {
+		JobDetailsResponseBean responseBean = null;
+		if(response != null) {
+			responseBean = new JobDetailsResponseBean(getJobResponse(response));
+			responseBean.setTasks(response.getResult().getScheduleStatusResult().getTasks());
+		}
+		
+		return responseBean;
+	}
+	
+	/**
+	 * Gets the pending job reason bean.
+	 *
+	 * @param response the response
+	 * @return the pending job reason bean
+	 */
+	private static PendingJobReasonBean getPendingJobReasonBean(Response response) {
+		PendingJobReasonBean responseBean = null;
+		if(response != null) {
+			responseBean = new PendingJobReasonBean(getJobResponse(response));
+			responseBean.setReasons(response.getResult().getGetPendingReasonResult().getReasons());
+		}
+		
+		return responseBean;
+	}
+	
+	/**
+	 * Gets the job response.
+	 *
+	 * @param response the response
+	 * @return the job response
+	 */
+	private static ResponseBean getJobResponse(Response response) {
 		ResponseBean responseBean = null;
 		if(response != null) {
 			responseBean = new ResponseBean();
