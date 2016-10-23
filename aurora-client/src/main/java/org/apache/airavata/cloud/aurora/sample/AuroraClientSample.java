@@ -5,15 +5,15 @@ import java.util.Properties;
 import java.util.Set;
 
 import org.apache.airavata.cloud.aurora.client.AuroraSchedulerClientFactory;
+import org.apache.airavata.cloud.aurora.client.sdk.ExecutorConfig;
+import org.apache.airavata.cloud.aurora.client.sdk.GetJobsResult;
+import org.apache.airavata.cloud.aurora.client.sdk.Identity;
+import org.apache.airavata.cloud.aurora.client.sdk.JobConfiguration;
+import org.apache.airavata.cloud.aurora.client.sdk.JobKey;
+import org.apache.airavata.cloud.aurora.client.sdk.ReadOnlyScheduler;
+import org.apache.airavata.cloud.aurora.client.sdk.Response;
+import org.apache.airavata.cloud.aurora.client.sdk.TaskConfig;
 import org.apache.airavata.cloud.aurora.util.Constants;
-import org.apache.aurora.gen.ExecutorConfig;
-import org.apache.aurora.gen.GetJobsResult;
-import org.apache.aurora.gen.Identity;
-import org.apache.aurora.gen.JobConfiguration;
-import org.apache.aurora.gen.JobKey;
-import org.apache.aurora.gen.ReadOnlyScheduler;
-import org.apache.aurora.gen.Response;
-import org.apache.aurora.gen.TaskConfig;
 import org.apache.thrift.TException;
 
 public class AuroraClientSample {
@@ -67,7 +67,7 @@ public class AuroraClientSample {
 	
 	public static void main(String[] args) {
 		 try {
-			properties.load(AuroraClientSample.class.getClassLoader().getResourceAsStream("aurora-scheduler.properties"));
+			properties.load(AuroraClientSample.class.getClassLoader().getResourceAsStream(Constants.AURORA_SCHEDULER_PROP_FILE));
 			String auroraHost = properties.getProperty(Constants.AURORA_SCHEDULER_HOST);
 			String auroraPort = properties.getProperty(Constants.AURORA_SCHEDULER_PORT);
 			auroraSchedulerClient = AuroraSchedulerClientFactory.createAuroraClient(MessageFormat.format(Constants.AURORA_SCHEDULER_CONNECTION_URL, auroraHost, auroraPort));

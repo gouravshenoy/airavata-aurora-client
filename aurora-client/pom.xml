@@ -11,9 +11,9 @@
 
 	<dependencies>
 		<dependency>
-			<groupId>org.apache.aurora</groupId>
-			<artifactId>Aurora_Thrift_Gen</artifactId>
-			<version>1.0</version>
+			<groupId>org.apache.thrift</groupId>
+			<artifactId>libthrift</artifactId>
+			<version>0.9.3</version>
 		</dependency>
 		<dependency>
 			<groupId>org.json</groupId>

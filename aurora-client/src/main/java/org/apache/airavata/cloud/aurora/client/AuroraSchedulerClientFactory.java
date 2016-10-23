@@ -1,6 +1,6 @@
 package org.apache.airavata.cloud.aurora.client;
 
-import org.apache.aurora.gen.ReadOnlyScheduler;
+import org.apache.airavata.cloud.aurora.client.sdk.ReadOnlyScheduler;
 import org.apache.thrift.protocol.TJSONProtocol;
 import org.apache.thrift.protocol.TProtocol;
 import org.apache.thrift.transport.THttpClient;
